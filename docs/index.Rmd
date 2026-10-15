@@ -9,20 +9,19 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Midterm
-##Part I
-**Code explanation below each code chunk**
+# Midterm
+## Part I 
 ```{r}
-install.packages("git2r")
 library(usethis)
 library(git2r)
 library(rvest)
 library(tidyverse)
 library(dplyr)
 ```
+**Code explanation below each code chunk:**    
 code space for libraries and any packages I may need
 
-##Part II:
+## Part II:
 ```{r}
 communities <- read_html("https://en.wikipedia.org/wiki/Community_areas_of_Chicago")
 ```
@@ -131,6 +130,55 @@ books_20_bonus <- tibble(
 books_20_bonus
 ```
 Final bonus table
+
+## Part III
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
