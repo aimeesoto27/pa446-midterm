@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #Midterm
 ##Part I
+**Code explanation below each code chunk**
 ```{r}
 install.packages("git2r")
 library(usethis)
@@ -21,11 +22,11 @@ library(dplyr)
 ```
 code space for libraries and any packages I may need
 
-Part II:
+##Part II:
 ```{r}
 communities <- read_html("https://en.wikipedia.org/wiki/Community_areas_of_Chicago")
 ```
-reads the page into r
+Reads the page into r
 
 ```{r}
 df_communities <- communities %>%
@@ -47,9 +48,93 @@ df_communities <- df_communities %>%
     density_km = density_2
   )
 
-df_communities <- df_communities[, -1]
-
 df_communities$population <- gsub("[,]","", df_communities$population)
 df_communities$population <-as.numeric(df_communities$population)
 ```
-Cleaning the dataframe by cleaning the column names and removing the numbering column, removing additional rows and removing the commas from population and changing population data type to numeric 
+Cleans the dataframe by cleaning the column names, removing additional rows and removing the commas from population in order to change population data type to numeric 
+
+```{r}
+print(df_communities[df_communities$no == 24, ])
+```
+Prints the row for west town
+```{r}
+print(head(df_communities[order(df_communities$population, decreasing = TRUE), ], 5))
+```
+Prints the top 5 most populated areas in Chicago
+
+```{r}
+url <- read_html("https://books.toscrape.com/")
+```
+Reads the link in r
+```{r}
+books <- url %>%
+  html_elements(".product_pod")
+```
+Sections where information is located
+```{r}
+titles <- books %>%
+  html_elements("h3 a") %>%
+  html_attr("title")
+titles
+```
+Pulls the title names into a list
+```{r}
+price <- books%>%
+  html_elements(".price_color")%>%
+  html_text2()
+price
+```
+Pulls the price of the books into a list
+```{r}
+
+availability <- books %>%
+  html_elements(".availability.instock")%>%
+  html_text2()
+availability
+```
+Pulls the avaliability of the book into a list
+```{r}
+books_20 <- tibble(
+  title = titles,
+  price = price,
+  availability = availability
+)
+books_20
+```
+pulls all the elements into a table
+```{r}
+rating <- books %>%
+  html_elements(".star-rating")%>%
+  html_attr("class")
+
+rating <- gsub("star-rating", "", rating)
+rating
+
+```
+Add in rating column as a bonus 
+
+```{r}
+rating_num <- c(" One" = 1, " Two" = 2, " Three" = 3, " Four" = 4, " Five" = 5)
+
+rating <- as.numeric(rating_num[rating])
+rating
+```
+Had to create a vector so the written numbers could know which numeric values they belonged to and assign them
+
+```{r}
+books_20_bonus <- tibble(
+  title = titles,
+  price = price,
+  availability = availability, 
+  rating = rating
+)
+books_20_bonus
+```
+Final bonus table
+
+
+
+
+
+
+
