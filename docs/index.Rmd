@@ -133,6 +133,38 @@ Final bonus table
 
 ## Part III
 
+```{r}
+library(httr)
+library(jsonlite)
+```
+Loads the needed libraries
+```{r}
+url <- "https://data.cityofchicago.org/resource/v6vf-nfxy.json"
+
+params <- list(
+    community_area = "24",
+    '$where' = "created_date >= '2026-01-01T00:00:00'",
+    '$order' = "created_date DESC",
+    '$limit' = 1000
+    )
+
+response <- GET(url, query = params)
+```
+Requests the data from the url and put parameters around certain variables, like filtering
+
+```{r}
+df <- fromJSON(content(response, "text", encoding = "UTF-8"))
+
+print(nrow(df))
+```
+```{r}
+print(colnames(df))
+```
+Creates the dataframe from the information and prints the number of rows of the dataframe as well as the column names
+
+```{r}
+
+```
 
 
 
