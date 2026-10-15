@@ -163,8 +163,14 @@ print(colnames(df))
 Creates the dataframe from the information and prints the number of rows of the dataframe as well as the column names
 
 ```{r}
-
+sr_counts <- df %>%
+  count(sr_type, sort =TRUE)%>%
+  slice_head( n = 10)%>%
+  print()
 ```
+Creates a count of different service requests types, put them in descending order and found the top ten most common.  
+
+A: This summary suggests that the neighborhood overwhelming needs graffiti removal more than any other service. The requests for graffiti removal is more than 3x that of the second most common request. This data cannot tell us which areas of West Town are the most common spots for these requests. 
 
 
 
