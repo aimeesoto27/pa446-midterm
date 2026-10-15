@@ -1,0 +1,55 @@
+---
+title: "index"
+author: "Aimee Soto"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Midterm
+##Part I
+```{r}
+install.packages("git2r")
+library(usethis)
+library(git2r)
+library(rvest)
+library(tidyverse)
+library(dplyr)
+```
+code space for libraries and any packages I may need
+
+Part II:
+```{r}
+communities <- read_html("https://en.wikipedia.org/wiki/Community_areas_of_Chicago")
+```
+reads the page into r
+
+```{r}
+df_communities <- communities %>%
+  html_element("table") %>%
+  html_table%>%
+  janitor::clean_names()
+```
+Calls the table from the datapage and uses the element function to scrape the table from the page into a neat table
+
+```{r}
+df_communities <- df_communities %>%
+  slice(-(1), -(n()))
+
+df_communities <- df_communities %>%
+  rename(
+    area_sqmi = area_9,
+    area_km = area_9_2,
+    density_sqmi = density,
+    density_km = density_2
+  )
+
+df_communities <- df_communities[, -1]
+
+df_communities$population <- gsub("[,]","", df_communities$population)
+df_communities$population <-as.numeric(df_communities$population)
+```
+Cleaning the dataframe by cleaning the column names and removing the numbering column, removing additional rows and removing the commas from population and changing population data type to numeric 
