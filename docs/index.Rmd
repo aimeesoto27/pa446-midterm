@@ -100,7 +100,7 @@ books_20 <- tibble(
 )
 books_20
 ```
-pulls all the elements into a table
+Pulls all the elements into a table
 ```{r}
 rating <- books %>%
   html_elements(".star-rating")%>%
@@ -157,6 +157,7 @@ df <- fromJSON(content(response, "text", encoding = "UTF-8"))
 
 print(nrow(df))
 ```
+Prints the number of rows
 ```{r}
 print(colnames(df))
 ```
@@ -179,12 +180,10 @@ Gross rent as a Percentage of Household Income, "50.0 percent or more": B25070_0
 Median Household Income: B19013_001E
 
 ```{r}
-install.packages("tidycensus")
 library(tidycensus)
 library (tidyverse)
-tidycensus::census_api_key("229ded5845ed56959b820d23b3361218ccb17e65", install = TRUE)
 ```
-To load any necessary libraries
+Loads any necessary libraries
 
 ```{r}
 readRenviron("~/.Renviron")
@@ -260,7 +259,7 @@ ggplot(ohio_counties, aes(x=median_household_incomeE,
   )+
   theme_minimal()
 ```
-
+  The code creates a scatter plot with the request x and y and a regression line to show any treads between burden rate of rents and median household income.
 ```{r}
 ggplot(selected_counties, aes(x = reorder(NAME, severe_burden_rate), 
                              y = severe_burden_rate)) +
@@ -273,7 +272,7 @@ ggplot(selected_counties, aes(x = reorder(NAME, severe_burden_rate),
   ) +
   theme_minimal()
 ```
-This code creates a bar chart of the 10 most extreme values of the severe burden rate. I utilized the dataframe I created from the previous min and max step.
+  This code creates a bar chart of the 10 most extreme values of the severe burden rate. I utilized the dataframe I created from the previous min and max step.
 
 **Reflect:**          
 **1.:** There is no strong relationship between income and severe rent burden in Ohio. The scatterplot shows a slight decrease in severe rent burden among higher income households as the regression line decreases along the x-axis. However, the decrease is very small and the line does not seem well fit.   
