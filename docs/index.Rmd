@@ -275,12 +275,12 @@ ggplot(selected_counties, aes(x = reorder(NAME, severe_burden_rate),
 ```
 This code creates a bar chart of the 10 most extreme values of the severe burden rate. I utilized the dataframe I created from the previous min and max step.
 
+**Reflect:**          
+**1.:** There is no strong relationship between income and severe rent burden in Ohio. The scatterplot shows a slight decrease in severe rent burden among higher income households as the regression line decreases along the x-axis. However, the decrease is very small and the line does not seem well fit.   
 
+**2.:** The limitations of using county-level ACS estimates to decide where to target rental assistance is that the data is very broad and doesn't account for other factors of rent-burden. There could be other reasons such as housing availability and rent prices that driven rent burdens instead of income. This data is limited in that it cannot provide market research but only demographics. 
 
-
-
-
-
+## Part V
 
 
 
