@@ -237,21 +237,44 @@ ohio_counties%>%
 This code computes the mean and median of the severe burden rate in Ohio
 
 ```{r}
-ohio_counties %>%
-  slice_max(severe_burden_rate, n=5, with_ties = FALSE)%>%
-  select(NAME, severe_burden_rate)
+selected_counties <- bind_rows(
+  ohio_counties %>% slice_max(severe_burden_rate, n=5, with_ties = FALSE),
+  ohio_counties %>% slice_min(severe_burden_rate, n=5, with_ties = FALSE)
+)%>%
+  distinct(NAME, .keep_all = TRUE)
+
+selected_counties
 ```
-This identifies the counties with the highest severe burden rates in Ohio
-```{r}
-ohio_counties %>%
-  slice_min(severe_burden_rate, n=5, with_ties = FALSE)%>%
-  select(NAME, severe_burden_rate)
-```
-This code identifies the counties with the lowest severe burden rates in Ohio
+This code identifies the counties with the highest and lowest severe burden rates in Ohio
 
 ```{r}
-
+library(ggplot2)
+ggplot(ohio_counties, aes(x=median_household_incomeE,
+                          y=severe_burden_rate))+
+  geom_point()+
+  geom_smooth(method = "lm", se= TRUE)+
+  labs(
+    title = "Severe Rent Burden vs Median Household Income in Ohio Counties",
+    x = "Median Household Income (dollars)",
+    y = "Households Paying 50% or more Income Toward Rent (%)"
+  )+
+  theme_minimal()
 ```
+
+```{r}
+ggplot(selected_counties, aes(x = reorder(NAME, severe_burden_rate), 
+                             y = severe_burden_rate)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Highest and Lowest Severe Rent Burden Rates by Ohio County",
+    x = "County",
+    y = "Severe Burden Rate (%)"
+  ) +
+  theme_minimal()
+```
+This code creates a bar chart of the 10 most extreme values of the severe burden rate. I utilized the dataframe I created from the previous min and max step.
+
 
 
 
