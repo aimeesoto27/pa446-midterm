@@ -227,7 +227,31 @@ ohio_counties
 ```
 Arranges the counties severe burden rate from highest to lowest. Athens county is the highest.
 
+```{r}
+ohio_counties%>%
+  summarise(
+    mean_severe_burden_rate = mean(severe_burden_rate, na.rm = TRUE),
+    median_severe_burden_rate = median(severe_burden_rate, na.rm = TRUE)
+  )
+```
+This code computes the mean and median of the severe burden rate in Ohio
 
+```{r}
+ohio_counties %>%
+  slice_max(severe_burden_rate, n=5, with_ties = FALSE)%>%
+  select(NAME, severe_burden_rate)
+```
+This identifies the counties with the highest severe burden rates in Ohio
+```{r}
+ohio_counties %>%
+  slice_min(severe_burden_rate, n=5, with_ties = FALSE)%>%
+  select(NAME, severe_burden_rate)
+```
+This code identifies the counties with the lowest severe burden rates in Ohio
+
+```{r}
+
+```
 
 
 
