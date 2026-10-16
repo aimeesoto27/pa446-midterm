@@ -100,7 +100,8 @@ books_20 <- tibble(
 )
 books_20
 ```
-Pulls all the elements into a table
+Pulls all the elements into a table.  
+**Bonus**
 ```{r}
 rating <- books %>%
   html_elements(".star-rating")%>%
@@ -136,6 +137,7 @@ Final bonus table
 ```{r}
 library(httr)
 library(jsonlite)
+library(lubridate)
 ```
 Loads the needed libraries
 ```{r}
@@ -169,15 +171,16 @@ sr_counts <- df %>%
   slice_head( n = 10)%>%
   print()
 ```
-Creates a count of different service requests types, put them in descending order and found the top ten most common.  
+Creates a count of different service requests types, put them in descending order and found the top ten most common.   
 
-A: This summary suggests that the neighborhood overwhelming needs graffiti removal more than any other service. The requests for graffiti removal is more than 3x that of the second most common request. This data cannot tell us which areas of West Town are the most common spots for these requests. 
+**Interpret Answer:** This summary suggests that the neighborhood overwhelming needs graffiti removal more than any other service. The requests for graffiti removal is more than 3x that of the second most common request. This data cannot tell us which areas of West Town are the most common spots for these requests. 
+
 
 ## Part IV
-The variables:    
-Gross rent as a Percentage of Household Income, "Total": B25070_001E
-Gross rent as a Percentage of Household Income, "50.0 percent or more": B25070_010E
-Median Household Income: B19013_001E
+The variables:     
+Gross rent as a Percentage of Household Income, "Total": B25070_001E.    
+Gross rent as a Percentage of Household Income, "50.0 percent or more": B25070_010E.   
+Median Household Income: B19013_001E.    
 
 ```{r}
 library(tidycensus)
@@ -226,6 +229,13 @@ ohio_counties
 ```
 Arranges the counties severe burden rate from highest to lowest. Athens county is the highest.
 
+**Bonus**
+```{r}
+ohio_counties <- ohio_counties %>%
+  separate(NAME, into = c("county", "state"), sep = ", ")
+```
+Separates the name of the counties in Ohio into their own column of county and state. The column was formmated very nicely so I just had to use the comma to break them out
+
 ```{r}
 ohio_counties%>%
   summarise(
@@ -240,7 +250,7 @@ selected_counties <- bind_rows(
   ohio_counties %>% slice_max(severe_burden_rate, n=5, with_ties = FALSE),
   ohio_counties %>% slice_min(severe_burden_rate, n=5, with_ties = FALSE)
 )%>%
-  distinct(NAME, .keep_all = TRUE)
+  distinct(county, .keep_all = TRUE)
 
 selected_counties
 ```
@@ -259,9 +269,10 @@ ggplot(ohio_counties, aes(x=median_household_incomeE,
   )+
   theme_minimal()
 ```
-  The code creates a scatter plot with the request x and y and a regression line to show any treads between burden rate of rents and median household income.
+     
+The code creates a scatter plot with the request x and y and a regression line to show any treads between burden rate of rents and median household income.
 ```{r}
-ggplot(selected_counties, aes(x = reorder(NAME, severe_burden_rate), 
+ggplot(selected_counties, aes(x = reorder(county, severe_burden_rate), 
                              y = severe_burden_rate)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -275,19 +286,19 @@ ggplot(selected_counties, aes(x = reorder(NAME, severe_burden_rate),
   This code creates a bar chart of the 10 most extreme values of the severe burden rate. I utilized the dataframe I created from the previous min and max step.
 
 **Reflect:**          
-**1.:** There is no strong relationship between income and severe rent burden in Ohio. The scatterplot shows a slight decrease in severe rent burden among higher income households as the regression line decreases along the x-axis. However, the decrease is very small and the line does not seem well fit.   
+**1:** There is no strong relationship between income and severe rent burden in Ohio. The scatterplot shows a slight decrease in severe rent burden among higher income households as the regression line decreases along the x-axis. However, the decrease is very small and the line does not seem well fit.   
 
-**2.:** The limitations of using county-level ACS estimates to decide where to target rental assistance is that the data is very broad and doesn't account for other factors of rent-burden. There could be other reasons such as housing availability and rent prices that driven rent burdens instead of income. This data is limited in that it cannot provide market research but only demographics. 
+**2:** The limitations of using county-level ACS estimates to decide where to target rental assistance is that the data is very broad and doesn't account for other factors of rent-burden. There could be other reasons such as housing availability and rent prices that driven rent burdens instead of income. This data is limited in that it cannot provide market research but only demographics. 
 
 ## Part V
-**1.:** If I wanted to publish a map of West Town requests, residents may feel their privacy violated in that they did not consent to their requests being made public. Anyone could easily see the map and learn things about specific residents who live there. For example, an insurance company could use the map to influence the insurance rates for residents who live there. Therefore, a map containing specific addresses of the requests would need to be de-identifiable and have noise added to it. I would do this by utilizing perturbation and removing identifiers. I would remove the street_address columns and add 5% noise to obscure the data. This will help ensure use of summary statistics instead of individual records and exact value be hidden. 
-**2.:**A city manager can be misled by assigning repair crews to request counts because people can call in multiple requests for the same issue. One way to check is by aggregating the data. This could be done by utilizing the street_address column to group requests that have the same street_address, report date and service request so that if multiple people report the same problem to the same location, only one crew is called in to fix it. This allows the city manager to group projects and provide better accuracy for repair crews.
-**3.:**The web scraping done in Part II was appropriate because the data was public and non-personable as the data for communities was about general areas. Furthermore the data regarding the books was purely factual except for the star ratings which was generalized from multiple reviews. Situations where one should not scrape without further review is when the data is not public or behind a paywall and there is identifiable information included. A civic data example situation would be web scraping voter information to see how many individuals living in a neighborhood are registered to vote. Even if the information is meant to help empower voters, it is an ethical and legal violation despite a well-intended goal.
+**1:** If I wanted to publish a map of West Town requests, residents may feel their privacy violated in that they did not consent to their requests being made public. Anyone could easily see the map and learn things about specific residents who live there. For example, an insurance company could use the map to influence the insurance rates for residents who live there. Therefore, a map containing specific addresses of the requests would need to be de-identifiable and have noise added to it. I would do this by utilizing perturbation and removing identifiers. I would remove the street_address columns and add 5% noise to obscure the data. This will help ensure use of summary statistics instead of individual records and exact value be hidden.   
+**2:**A city manager can be misled by assigning repair crews to request counts because people can call in multiple requests for the same issue. One way to check is by aggregating the data. This could be done by utilizing the street_address column to group requests that have the same street_address, report date and service request so that if multiple people report the same problem to the same location, only one crew is called in to fix it. This allows the city manager to group projects and provide better accuracy for repair crews.   
+**3:**The web scraping done in Part II was appropriate because the data was public and non-personable as the data for communities was about general areas. Furthermore the data regarding the books was purely factual except for the star ratings which was generalized from multiple reviews. Situations where one should not scrape without further review is when the data is not public or behind a pay-wall and there is identifiable information included. A civic data example situation would be web scraping voter information to see how many individuals living in a neighborhood are registered to vote. Even if the information is meant to help empower voters, it is an ethical and legal violation despite a well-intended goal.   
 
 
 
-
-
+**AI Use Statement:** I used DuckDuckGo ai to help me with targeted functions. I used AI to help me web scrape using the GET function as well as how to use the gsub() function and fromJSON. Those were the 3 functions I needed AI to explain to me. 
+     
 
 
 
