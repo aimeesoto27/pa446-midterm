@@ -553,6 +553,81 @@ books_20_bonus</code></pre>
 </div>
 <div id="part-iii" class="section level2">
 <h2>Part III</h2>
+<pre class="r"><code>library(httr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;httr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:git2r&#39;:
+## 
+##     config, content</code></pre>
+<pre class="r"><code>library(jsonlite)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;jsonlite&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     flatten</code></pre>
+<p>Loads the needed libraries</p>
+<pre class="r"><code>url &lt;- &quot;https://data.cityofchicago.org/resource/v6vf-nfxy.json&quot;
+
+params &lt;- list(
+    community_area = &quot;24&quot;,
+    &#39;$where&#39; = &quot;created_date &gt;= &#39;2026-01-01T00:00:00&#39;&quot;,
+    &#39;$order&#39; = &quot;created_date DESC&quot;,
+    &#39;$limit&#39; = 1000
+    )
+
+response &lt;- GET(url, query = params)</code></pre>
+<p>Requests the data from the url and put parameters around certain
+variables, like filtering</p>
+<pre class="r"><code>df &lt;- fromJSON(content(response, &quot;text&quot;, encoding = &quot;UTF-8&quot;))
+
+print(nrow(df))</code></pre>
+<pre><code>## [1] 1000</code></pre>
+<pre class="r"><code>print(colnames(df))</code></pre>
+<pre><code>##  [1] &quot;sr_number&quot;           &quot;sr_type&quot;             &quot;sr_short_code&quot;      
+##  [4] &quot;created_department&quot;  &quot;owner_department&quot;    &quot;status&quot;             
+##  [7] &quot;origin&quot;              &quot;created_date&quot;        &quot;last_modified_date&quot; 
+## [10] &quot;street_address&quot;      &quot;city&quot;                &quot;state&quot;              
+## [13] &quot;zip_code&quot;            &quot;street_number&quot;       &quot;street_direction&quot;   
+## [16] &quot;street_name&quot;         &quot;street_type&quot;         &quot;duplicate&quot;          
+## [19] &quot;legacy_record&quot;       &quot;community_area&quot;      &quot;ward&quot;               
+## [22] &quot;electrical_district&quot; &quot;electricity_grid&quot;    &quot;police_sector&quot;      
+## [25] &quot;police_district&quot;     &quot;police_beat&quot;         &quot;precinct&quot;           
+## [28] &quot;created_hour&quot;        &quot;created_day_of_week&quot; &quot;created_month&quot;      
+## [31] &quot;x_coordinate&quot;        &quot;y_coordinate&quot;        &quot;latitude&quot;           
+## [34] &quot;longitude&quot;           &quot;location&quot;            &quot;parent_sr_number&quot;   
+## [37] &quot;closed_date&quot;</code></pre>
+<p>Creates the dataframe from the information and prints the number of
+rows of the dataframe as well as the column names</p>
+<pre class="r"><code>sr_counts &lt;- df %&gt;%
+  count(sr_type, sort =TRUE)%&gt;%
+  slice_head( n = 10)%&gt;%
+  print()</code></pre>
+<pre><code>##                                    sr_type   n
+## 1                 Graffiti Removal Request 202
+## 2             Rodent Baiting/Rat Complaint  61
+## 3              Pothole in Street Complaint  41
+## 4               Yard Waste Pick-Up Request  40
+## 5  Finance Parking Code Enforcement Review  37
+## 6                  Alley Pothole Complaint  32
+## 7              Abandoned Vehicle Complaint  29
+## 8                Sanitation Code Violation  29
+## 9                           Tree Emergency  28
+## 10                Garbage Cart Maintenance  27</code></pre>
+<p>Creates a count of different service requests types, put them in
+descending order and found the top ten most common.</p>
+<p>A: This summary suggests that the neighborhood overwhelming needs
+graffiti removal more than any other service. The requests for graffiti
+removal is more than 3x that of the second most common request. This
+data cannot tell us which areas of West Town are the most common spots
+for these requests.</p>
+</div>
+<div id="part-iv" class="section level2">
+<h2>Part IV</h2>
+<p>The variables:<br />
+Gross rent as a Percentage of Household Income, “Total”: B25070_001E
+Gross rent as a Percentage of Household Income, “50.0 percent or more”:
+B25070_010E Median Household Income: B19013_001E</p>
+<p>To load any necessary libraries</p>
 </div>
 </div>
 

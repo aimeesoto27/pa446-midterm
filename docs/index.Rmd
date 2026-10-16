@@ -172,11 +172,60 @@ Creates a count of different service requests types, put them in descending orde
 
 A: This summary suggests that the neighborhood overwhelming needs graffiti removal more than any other service. The requests for graffiti removal is more than 3x that of the second most common request. This data cannot tell us which areas of West Town are the most common spots for these requests. 
 
+## Part IV
+The variables:    
+Gross rent as a Percentage of Household Income, "Total": B25070_001E
+Gross rent as a Percentage of Household Income, "50.0 percent or more": B25070_010E
+Median Household Income: B19013_001E
 
+```{r}
+install.packages("tidycensus")
+library(tidycensus)
+library (tidyverse)
+tidycensus::census_api_key("229ded5845ed56959b820d23b3361218ccb17e65", install = TRUE)
+```
+To load any necessary libraries
 
+```{r}
+readRenviron("~/.Renviron")
 
+ohio_counties <- get_acs(
+  geography = "county",
+  state = "OH",
+  year = 2024,
+  survey = "acs5",
+  output = "wide",
+  variables = c(
+    gross_rent_total = "B25070_001",
+    gross_rent_50pct = "B25070_010",
+    median_household_income = "B19013_001"
+  ),
+)%>%
+  select(
+    GEOID, NAME, gross_rent_totalE, gross_rent_50pctE, median_household_incomeE
+    )
 
+ohio_counties
+```
+Retrieves the three variables for each county in Ohio. Kept variables with "E" for estimates and removed "M" variables which stood for margin of error but doesnt seem to be necessary for the dataframe.Made the dataframe wide to have all three variables side-by-side
 
+```{r}
+ohio_counties <- ohio_counties%>%
+  mutate(
+    severe_burden_rate = 
+      (gross_rent_50pctE / gross_rent_totalE) * 100
+    )
+ohio_counties
+```
+Mutates the gross rent 50% variable divided gross rental total and multiples it by 100 to create a new variable called, "severe_burden_rate"
+
+```{r}
+ohio_counties <- ohio_counties%>%
+  arrange(desc(severe_burden_rate))
+
+ohio_counties
+```
+Arranges the counties severe burden rate from highest to lowest. Athens county is the highest.
 
 
 
